@@ -3,7 +3,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium import webdriver
-from bs4 import BeautifulSoup
 import time
 
 def count(mass_split, unique_mass):
@@ -106,28 +105,9 @@ try:
         time.sleep(1)
         browser.quit()
 
-# except NoSuchElementException:
-#     print(str(s)+')', item, "error")
-#     pass
-
 finally:
     time.sleep(1)
     browser.quit()
-
-# try:
-#     for item, count_item in d.items():
-#         browser = webdriver.Chrome()
-#         browser.get("https://steamcommunity.com/market/")
-#         input1 = browser.find_element_by_css_selector('#findItemsSearchBox').send_keys(item)
-#         button_search = browser.find_element_by_css_selector('#findItemsSearchSubmit').click()
-#         price = browser.find_element_by_xpath('//*[@id="result_0"]/div[1]/div[2]/span[1]/span[1]').text
-#         print(item, price)
-#         time.sleep(1)
-#         browser.quit()
-#
-# finally:
-#     time.sleep(5)
-#     browser.quit()
 
 
 
