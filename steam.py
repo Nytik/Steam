@@ -3,6 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 from selenium import webdriver
+import re
 import time
 
 def count(mass_split, unique_mass):
@@ -83,6 +84,15 @@ unique_mass = unique(mass_split)   # выбираем уникальные зн�
 d = count(mass_split, unique_mass)  # тут словарь будет например, ключ - 'Наклейка | Titan | Катовице 2015, AK-47 | Синий глянец': 1 - значение (количество предметов)
 s = 0
 
+price_sum = {}
+
+def sum_inventory(price_item):
+    q = 0
+    for price_item, z in price_sum.items():
+        price_item = re.sub("[^0-9|.]", '', price_item)
+        q += float(price_item) * z
+    return round(q, 2)
+
 try:
     for item, count_item in d.items():
         s = s + 1
@@ -91,23 +101,27 @@ try:
         browser = webdriver.Chrome(executable_path=r'C:\chromedriver\chromedriver.exe', options=options)
         # Переход на страницу входа
         browser.get('https://steamcommunity.com/market/')
+        browser.implicitly_wait(5)
         browser.find_element_by_css_selector('#findItemsSearchBox').send_keys(item)
+        browser.implicitly_wait(5)
         browser.find_element_by_css_selector('#findItemsSearchSubmit').click()
-        # browser.implicitly_wait(20)
+        browser.implicitly_wait(5)
         try:
             price = WebDriverWait(browser, 40).until(EC.presence_of_element_located((By.XPATH, '//*[@id="result_0"]/div[1]/div[2]/span[1]/span[1]'))).text
-            # price = browser.find_element_by_xpath('//*[@id="result_0"]/div[1]/div[2]/span[1]/span[1]').text
         except (TimeoutException, NoSuchElementException):
             text ="Page load Timeout Occured ... moving to next item !!!"
             print(text, item)
-
-        print(str(s)+')', item, price)
+            continue
+        price_sum[price] = count_item
+        print(str(s)+')', item, price, "Количество:", count_item, "Сумма всех элементов =", sum_inventory(price_sum))
         time.sleep(1)
         browser.quit()
+
 
 finally:
     time.sleep(1)
     browser.quit()
+
 
 
 
